@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udp-echo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      application: udp-echo
+  template:
+    metadata:
+      labels:
+        application: udp-echo
+    spec:
+      containers:
+      - name: echo
+        image: quay.io/gordons/udp-echo-server
+        imagePullPolicy: Always
+        ports:
+        - name: tcp
+          containerPort: 9292

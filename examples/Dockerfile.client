@@ -1,0 +1,4 @@
+FROM ubi7/nodejs-8
+
+ADD client.js /usr/bin/udp_client
+CMD ["bash"]

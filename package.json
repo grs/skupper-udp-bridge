@@ -1,0 +1,14 @@
+{
+    "name": "skupper-udp-bridge",
+    "version": "0.0.1",
+    "description": "udp bridge prototype",
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/grs/skupper-udp-bridge"
+    },
+    "dependencies": {
+        "debug": "*",
+        "rhea": "*"
+    }
+}

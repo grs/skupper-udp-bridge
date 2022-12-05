@@ -1,0 +1,4 @@
+FROM ubi7/nodejs-8
+
+ADD server.js /bin
+CMD ["node", "/bin/server.js"]

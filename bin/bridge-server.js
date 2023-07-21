@@ -100,7 +100,7 @@ function Server(svc_def) {
             new Target(target.selector, svc_def.address, getTargetPorts(target.targetPorts, svc_def.ports), svc_def.eventchannel)
         } else if (target.service != undefined && target.service != "") {
             for (var key in target.targetPorts) {
-                targetPort = target.targetPorts[key];
+                var targetPort = target.targetPorts[key];
                 create_udp_connector({port: targetPort, address: svc_def.address + '_' + key, multicast: svc_def.eventchannel});
             }
         } else {

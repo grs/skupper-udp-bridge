@@ -19,19 +19,19 @@ var log = require('../lib/log.js').logger();
 var udp = require('../lib/udp.js');
 
 function create_udp_connector (attributes) {
-    console.log('create_udp_connector(%o)', attributes)
+    console.log('%s create_udp_connector(%o)', new Date().toISOString(), attributes)
     var bridge = udp.egress(attributes.address, attributes.host, attributes.port, attributes.multicast);
     return bridge;
 }
 
 function create_udp_listener (attributes) {
-    console.log('create_udp_listener(%o)', attributes)
+    console.log('%s create_udp_listener(%o)', new Date().toISOString(), attributes)
     var bridge = udp.ingress(attributes.port, attributes.address, attributes.multicast);
     return bridge;
 }
 
 function Target(selector, address, ports, multicast) {
-    console.log('Creating target with selector %s, address %s, ports %o and multicast %s', selector, address, ports, multicast);
+    console.log('%s Creating target with selector %s, address %s, ports %o and multicast %s', new Date().toISOString(), selector, address, ports, multicast);
     this.address = address;
     this.ports = ports;
     this.multicast = multicast;
@@ -42,7 +42,7 @@ function Target(selector, address, ports, multicast) {
 
 Target.prototype.pods_updated = function (pods) {
     var hosts = pods.filter(pod_ready_and_running).map(get_pod_ip);
-    console.log('pods_updated(): hosts=', hosts);
+    console.log('%s pods_updated(): hosts=', new Date().toISOString(), hosts);
     //for each host, create a connector for each port in service definition
     for (var i in hosts) {
         var host = hosts[i]
@@ -50,7 +50,7 @@ Target.prototype.pods_updated = function (pods) {
             var bridges = [];
             for (var key in this.ports) {
                 var targetPort = this.ports[key];
-                console.log('Creating connector for %s:%s', host, targetPort)
+                console.log('%s Creating connector for %s:%s', new Date().toISOString(), host, targetPort)
                 bridges.push(create_udp_connector({port: targetPort, address: this.address + '_' + key, host: host, multicast: this.multicast}));
             }
             if (bridges.length) {
@@ -61,10 +61,10 @@ Target.prototype.pods_updated = function (pods) {
     //get rid of any stale connectors
     for (var host in this.connectors) {
         if (!hosts.includes(host)) {
-            console.log('Deleting stale connector for ' + host)
-            bridges = this.connectors[host]
-            for (var bridge in bridges) {
-                bridge.stop()
+            console.log('%s Deleting stale connector for %s', new Date().toISOString(), host)
+            bridges = this.connectors[host];
+            for (var i in bridges) {
+                bridges[i].stop()
             }
             delete(this.connectors[host])
         }
@@ -144,7 +144,7 @@ function pod_running (pod) {
 }
 
 function pod_ready_and_running (pod) {
-    return pod_ready(pod) && pod_running(pod);
+    return pod_ready(pod) && pod_running(pod) && !pod.metadata.deletionTimestamp;
 }
 
 function get_pod_ip (pod) {
